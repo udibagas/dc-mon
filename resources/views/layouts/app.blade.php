@@ -37,8 +37,8 @@
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="javascript:void(0)">RAK : DC-01</a></li>
-                        <li><a href="javascript:void(0)">IP ADDR : 10.45.5.55</a></li>
+                        <li><a href="javascript:void(0)">SMDC-03 : STORAGE</a></li>
+                        <li><a href="javascript:void(0)">IP ADDR : 10.45.5.122</a></li>
                         <li>
                             <a href="javascript:void(0)">
                                 <span id="clock">{{ date('d M Y H:i:s') }}</span>
