@@ -170,7 +170,7 @@
                     fontSize: 25
                 }
             },
-            data: [{value: 23, name: ''}]
+            data: [{value: 0, name: ''}]
         }];
 
         var gauge{{$s->id}}_{{$p->id}} = echarts.init(document.getElementById('gauge{{$s->id}}-{{$p->id}}'));
