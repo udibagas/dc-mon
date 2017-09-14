@@ -1,0 +1,17 @@
+// Variables
+@import "variables";
+
+// Bootstrap
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+body {
+    padding-top: 60px;
+}
+
+h1, h2, h3, h4 {
+    color: #fff;
+}
+
+h1 small, h2 small, h3 small, h4 small  {
+    color: #fff;
+}
