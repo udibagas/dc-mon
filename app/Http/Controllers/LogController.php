@@ -20,9 +20,13 @@ class LogController extends Controller
 
         $value = Log::select('value')->when($request->param_id, function($query) use ($request) {
                     return $query->where('param_id', $request->param_id);
-                })->when($request->sensor, function($query) use ($request) {
-                    return $query->where('sensor', $request->sensor);
+                })->when($request->sensor_id, function($query) use ($request) {
+                    return $query->where('sensor_id', $request->sensor_id);
                 })->latest()->first();
+
+        if ($request->chart == "gauge") {
+            return json_encode(['value' => $value->value], JSON_NUMERIC_CHECK);
+        }
 
         $ret = [
             'data' => array_reverse(array_flatten($data)),

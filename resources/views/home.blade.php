@@ -15,7 +15,7 @@
                 @foreach ($p->sensors as $s)
                 <div class="col-md-6 text-center">
                     <div id="gauge{{$s->id}}-{{$p->id}}" style="height:300px;">
-                        ini {{ $s->id }} {{ $p->id }}
+
                     </div>
                     <div style="font-size:20px;">
                         {{ $s->code }} ({{ $s->position }})
@@ -176,6 +176,16 @@
         var gauge{{$s->id}}_{{$p->id}} = echarts.init(document.getElementById('gauge{{$s->id}}-{{$p->id}}'));
         gauge{{$s->id}}_{{$p->id}}.setOption({series:series});
 
+        setInterval(function() {
+            $.get('{{url("/log")}}', {chart: "gauge", param_id: {{$p->id}}, sensor_id: {{$s->id}}}, function(j) {
+                gauge{{$s->id}}_{{$p->id}}.setOption({
+                    series: {
+                        data:[{value:j.value, name:'-'}]
+                    }
+                });
+            }, 'json');
+        }, 3000);
+
         @endforeach
 
     @endforeach
@@ -198,7 +208,7 @@
                 });
             @endforeach
         }, 'json');
-    }, 1000);
+    }, 3000);
 
 </script>
 
