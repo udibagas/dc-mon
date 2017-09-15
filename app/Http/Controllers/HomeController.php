@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Param;
+use App\Sensor;
 
 class HomeController extends Controller
 {
@@ -15,7 +16,8 @@ class HomeController extends Controller
     public function index()
     {
         return view('home', [
-            'params' => Param::all()
+            'params' => Param::all(),
+            'sensors' => Sensor::all(),
         ]);
     }
 }

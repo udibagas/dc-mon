@@ -2,28 +2,17 @@
 
 @section('content')
 <div class="container-fluid">
-    @foreach ($params as $p)
-    <h3>{{ $p->name }} <small>{{ $p->description }}</small></h3>
+    @foreach ($sensors as $s)
+    <h3>{{ $s->code }} <small>{{ $s->position }}</small></h3>
     <hr>
     <div class="row">
-        <div class="col-md-6">
-            <div id="chart{{$p->id}}" style="height:330px;"></div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="row">
-                @foreach ($p->sensors as $s)
-                <div class="col-md-6 text-center">
-                    <div id="gauge{{$s->id}}-{{$p->id}}" style="height:300px;">
-
-                    </div>
-                    <div style="font-size:20px;">
-                        {{ $s->code }} ({{ $s->position }})
-                    </div>
-                </div>
-                @endforeach
+        @foreach ($s->params as $p)
+        <div class="col-md-4 text-center">
+            <div id="gauge{{$s->id}}-{{$p->id}}" style="height:300px;">
+                {{$p->name}}
             </div>
         </div>
+        @endforeach
     </div>
     @endforeach
 
@@ -53,75 +42,8 @@
         $('#clock').html(getClock(date));
     }, 1000);
 
-    @foreach ($params as $p)
-        var myChart{{$p->id}} = echarts.init(document.getElementById('chart{{$p->id}}'));
-        myChart{{$p->id}}.setOption({
-            backgroundColor: '#333',
-            tooltip: {},
-            xAxis: {
-                data: {{json_encode(range(1,36), JSON_NUMERIC_CHECK)}},
-                axisLine : {
-                    show: true,
-                    lineStyle: {
-                        color: '#fff',
-                    }
-               },
-                axisTick : {
-                    show:true,
-                    length: 10,
-                    lineStyle: {
-                        color: '#fff',
-                    }
-                },
-                axisLabel : {
-                    show:true,
-                    textStyle: {
-                        color: '#fff',
-                    }
-                },
-            },
-            yAxis: {
-                axisLine : {
-                    show: true,
-                    lineStyle: {
-                        color: '#fff',
-                    }
-                },
-                axisTick : {
-                    show:true,
-                    lineStyle: {
-                        color: '#fff',
-                    }
-                },
-                axisLabel : {
-                    show:true,
-                    formatter: '{value}{{$p->unit}}',
-                    textStyle: {
-                        color: '#fff',
-                    }
-                },
-                splitLine : {
-                    show:true,
-                    lineStyle: {
-                        color: '#fff',
-                        type: 'dotted',
-                    }
-                },
-                splitArea : {
-                    show: true,
-                    areaStyle:{
-                        color:['rgba(205,92,92,0.3)','rgba(255,215,0,0.3)']
-                    }
-                }
-            },
-            series: [{
-                name: 'tren',
-                type: 'line',
-                data: [0]
-            }]
-        });
-
-        @foreach ($p->sensors as $s)
+    @foreach ($sensors as $s)
+        @foreach ($s->params as $p)
         var series = [{
             type: 'gauge',
             min: {{$p->gauge_start}},
@@ -167,7 +89,7 @@
                 formatter: '{value}{{$p->unit}}',
                 textStyle: {
                     color: 'auto',
-                    fontSize: 25
+                    fontSize: 30
                 }
             },
             data: [{value: 0, name: ''}]
@@ -180,36 +102,14 @@
             $.get('{{url("/log")}}', {chart: "gauge", param_id: {{$p->id}}, sensor_id: {{$s->id}}}, function(j) {
                 gauge{{$s->id}}_{{$p->id}}.setOption({
                     series: {
-                        data:[{value:j.value, name:'-'}]
+                        data:[{value:j.value, name:'{{strtoupper($p->name)}}'}]
                     }
                 });
             }, 'json');
         }, 3000);
 
         @endforeach
-
     @endforeach
-
-    setInterval(function() {
-        $.get('{{url("/log")}}', function(j) {
-            // untuk line chart
-            @foreach ($params as $p)
-                myChart{{$p->id}}.setOption({
-                    series: [{
-                        data: j.data,
-                        name: 'tren',
-                        type: 'line',
-                        color: '#ddd'
-                    }, {
-                        data: j.data1,
-                        name: 'tren',
-                        type: 'line'
-                    }]
-                });
-            @endforeach
-        }, 'json');
-    }, 3000);
-
 </script>
 
 @endpush
