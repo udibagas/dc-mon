@@ -3,16 +3,25 @@
 @section('content')
 <div class="container-fluid">
     @foreach ($sensors as $s)
-    <h3>{{ $s->code }} <small>{{ $s->position }}</small></h3>
-    <hr>
-    <div class="row">
-        @foreach ($s->params as $p)
-        <div class="col-md-4 text-center">
-            <div id="gauge{{$s->id}}-{{$p->id}}" style="height:300px;">
-                {{$p->name}}
+    <div class="panel panel-info" style="background-color:transparent;">
+        <div class="panel-heading text-center">
+            <span style="font-size:20px;">{{ strtoupper($s->position) }}</span>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                @foreach ($s->params as $p)
+                <div class="col-md-4 text-center">
+                    <div id="gauge{{$s->id}}-{{$p->id}}" style="height:350px;">
+                        {{$p->name}}
+                    </div>
+
+                    <div class="alert alert-success text-center">
+                        <span style="font-size:20px;">NORMAL</span>
+                    </div>
+                </div>
+                @endforeach
             </div>
         </div>
-        @endforeach
     </div>
     @endforeach
 
