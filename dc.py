@@ -1,24 +1,25 @@
 import serial
 import time
-import random
+# import random
+import MySQLdb
+from threading import Thread
 
 class Pac:
     def __init__(self):
-        self.my_serial = serial.Serial('/dev/ttyACM1', baudrate=9600, timeout=0)
-
-        if not self.my_serial.is_open:
+        try:
+            self.my_serial = serial.Serial('/dev/ttyACM1', baudrate=9600, timeout=1)
+            # print "DC controller found"
+        except Exception as e:
             print "DC controller not found!"
             exit(0)
 
-        print "DC controller found"
-
     def set_compressor(self, set):
         self.my_serial.write('compressor ' + set)
-        return self.my_serial.read(3)
+        return self.my_serial.readline()
 
     def set_fan(self, set):
         self.my_serial.write('fan ' + set)
-        return self.my_serial.read()
+        return self.my_serial.readline()
 
     def set_fire(self, set):
         self.my_serial.write('fire ' + set)
@@ -42,118 +43,128 @@ class Pac:
 
 class Sensor:
     def __init__(self, interface):
-        self.my_serial = serial.Serial(interface, baudrate=9600, timeout=0)
-
-        if not self.my_serial.is_open:
+        try:
+            self.my_serial = serial.Serial(interface, baudrate=9600, timeout=1)
+            # print "Sensor found"
+        except Exception as e:
             print "Sensor not found"
             exit(0)
-
-        print "Sensor found"
 
     def get_suhu(self):
         self.my_serial.write('suhu')
         suhu = self.my_serial.readline()
         # suhu = random.uniform(19, 25)
-        return suhu
+        return int(suhu)
 
     def get_kelembaban(self):
         self.my_serial.write('kelembaban')
         kelembaban = self.my_serial.readline()
-        # kelembaban = random.uniform(39, 61)
-        return kelembaban
+        return int(kelembaban)
 
     def get_gas(self):
         self.my_serial.write('gas')
         gas = self.my_serial.readline()
-        # gas = random.uniform(20, 30)
-        return gas
+        return int(gas)
 
     def get_pintu(self):
         self.my_serial.write('pintu')
         pintu = self.my_serial.readline()
-        # pintu = random.uniform(0,1)
-        return gas
+        return int(pintu)
+
+    def get_all(self):
+        self.my_serial.write('all')
+        data = self.my_serial.readline()
+        return data.split(",")
 
     def get_arus(self):
         # self.my_serial.write('arus')
-        # gas = self.my_serial.readline()
-        gas = random.uniform(0, 100)
-        return gas
+        # arus = self.my_serial.readline()
+        arus = random.uniform(0, 100)
+        return int(arus)
 
     def close_serial(self):
         self.my_serial.close()
 
-if __name__ == "__main__":
-    pac = Pac()
-    sensor_front = Sensor('/dev/ttyACM2')
-    # sensor_rear = Sensor('/dev/serial_sensor_rear')
-    gas_counter = 0;
+pac = Pac()
+sensor_front = Sensor('/dev/ttyACM0')
+db =
 
-    while True:
-        try:
-            # DETEKSI ADA GAS ATAU TIDAK
-            gas = sensor_front.get_gas()
-            time.sleep(1)
-            print "Gas : " + str(gas)
+def cek_all():
+    data = sensor_front.get_all()
+    suhu = int(data[0])
+    kelembaban = int(data[1])
+    gas = int(data[2])
+    pintu = int(data[3])
 
-            if gas > 0:
-                # increase counter
-                gas_counter += 1
+    # insert to database
 
-                if gas_counter == 3:
-                    # reset counter
-                    gas_counter = 0
-                    # matikan ac dulu
-                    print "----------------------"
-                    print "gas detected. pac off"
-                    pac.turn_off()
-                    # hidupkan fire suppression selama 5 detik
-                    print "fire suppression on"
-                    print "----------------------"
-                    pac.set_fire('on')
-                    time.sleep(20)
-                    pac.set_fire('off')
 
-            # DETEKSI SUHU & KELEMBABAN
-            suhu = sensor_front.get_suhu()
-            time.sleep(1)
-            kelembaban = sensor_front.get_kelembaban()
-            time.sleep(1)
-            print "Suhu : " + str(suhu)
-            print "Kelembaban : " + str(kelembaban)
+    print "Gas : " + str(gas)
 
-            if suhu < 20:
-                print "---------------------"
-                print "suhu < 20 : compressor off"
-                print "---------------------"
-                pac.set_compressor('off')
+    if gas > 0:
+        # increase counter
+        gas_counter += 1
 
-            if suhu > 24 or kelembaban < 40:
-                print "--------------------------------------------------"
-                print "suhu > 24 or kelembaban < 40: compressor on"
-                print "--------------------------------------------------"
-                pac.set_compressor('on')
-
-                if kelembaban > 60:
-                    print "----------------------------"
-                    print "kelembaban > 60 : heater on"
-                    print "----------------------------"
-                    pac.set_heater('on')
-
-            pintu = sensor_front.get_pintu()
-            time.sleep(1)
-
-            if pintu:
-                pac.set_lamp('on')
-
-            # time.sleep(5)
-
-        except KeyboardInterrupt as e:
-            print "Bye"
+        if gas_counter == 3:
+            # reset counter
+            gas_counter = 0
+            # matikan ac dulu
+            print "----------------------"
+            print "gas detected. pac off"
             pac.turn_off()
-            pac.close_serial()
-            sensor_front.close_serial()
-            # sensor_rear.close_serial()
+            # hidupkan fire suppression selama 5 detik
+            print "fire suppression on"
+            print "----------------------"
+            pac.set_fire('on')
+            time.sleep(20)
+            pac.set_fire('off')
+
+    print "Suhu : " + str(suhu)
+    print "Kelembaban : " + str(kelembaban)
+
+    if suhu < 20:
+        print "---------------------"
+        print "suhu < 20 : compressor off"
+        print "---------------------"
+        pac.set_compressor('off')
+
+    if suhu > 24 or kelembaban < 40:
+        print "--------------------------------------------------"
+        print "suhu > 24 or kelembaban < 40: compressor on"
+        print "--------------------------------------------------"
+        pac.set_compressor('on')
+
+        if kelembaban > 60:
+            print "----------------------------"
+            print "kelembaban > 60 : heater on"
+            print "----------------------------"
+            pac.set_heater('on')
+
+    print "Pintu : " + str(pintu)
+
+    if pintu:
+        print "-----------------------"
+        print "Pintu terbuka: LAMPU ON"
+        print "-----------------------"
+        pac.set_lamp('on')
+
+if __name__ == "__main__":
+    # pac = Pac()
+    # sensor_front = Sensor('/dev/ttyACM0')
+    # sensor_rear = Sensor('/dev/serial_sensor_rear')
+
+    try:
+        while True:
+            cek_all()
+            time.sleep(1)
+
+    except KeyboardInterrupt as e:
+        print "Bye"
+        pac.turn_off()
+        pac.close_serial()
+        sensor_front.close_serial()
+        # sensor_rear.close_serial()
+
 
     # untuk console
     # while True:

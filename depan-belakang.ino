@@ -98,6 +98,17 @@ void loop() {
         Serial.println(pintu);
     }
 
+    // UNTUK BACA STATUS PINTU
+    else if (cmd == "all") {
+        Serial.print(suhu);
+        Serial.print(",");
+        Serial.print(kelembaban);
+        Serial.print(",");
+        Serial.print(gas);
+        Serial.print(",");
+        Serial.print(pintu);
+    }
+
     else {
         cmdOk = false;
     }

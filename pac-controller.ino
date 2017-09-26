@@ -1,6 +1,7 @@
 #include <elapsedMillis.h>
 
 elapsedMillis timer0;
+#define interval 300000
 
 // WARNING !!!
 // HIGH -> default relay 2 channel
@@ -15,14 +16,10 @@ const int PIN_FIRE_OFF = 13;
 
 // INPUT
 const int PIN_HI_PRESSURE = 9;
-// default state
-int on = 1;
-// interval nyala awal = 10 detik
-int interval = 10000;
+int nyala = 1;
 
 void setup() {
-    timerOn = 0;
-    timerOff = 0;
+    timer0 = 0;
 
     pinMode(PIN_COMPRESSOR, OUTPUT);
     pinMode(PIN_FAN, OUTPUT);
@@ -32,10 +29,9 @@ void setup() {
     pinMode(PIN_HEATER, OUTPUT);
     pinMode(PIN_HI_PRESSURE, INPUT_PULLUP);
 
-    // fan dan kompressor nyala di awal, makanya di comment
     // digitalWrite(PIN_FAN, HIGH);
     // digitalWrite(PIN_COMPRESSOR, HIGH);
-
+    
     digitalWrite(PIN_LAMPU, HIGH);
     digitalWrite(PIN_HEATER, HIGH);
     digitalWrite(PIN_FIRE_ON, HIGH);
@@ -46,9 +42,9 @@ void setup() {
 
 void loop() {
     if (timer0 > interval) {
-        timer -= interval;
-        on = 0;
-        digitalWrite(PIN_COMPRESSOR, HIGH);
+        timer0 -= interval;
+        nyala = !nyala;
+        digitalWrite(PIN_COMPRESSOR, !nyala)
     }
 
     boolean cmdOk = true;
