@@ -2,29 +2,32 @@
 
 @section('content')
 <div class="container-fluid">
-    @foreach ($sensors as $s)
-    <div class="panel panel-info" style="background-color:transparent;">
-        <div class="panel-heading text-center">
-            <span style="font-size:20px;">{{ strtoupper($s->position) }}</span>
-        </div>
-        <div class="panel-body">
-            <div class="row">
-                @foreach ($s->params as $p)
-                <div class="col-md-4 text-center">
-                    <div id="gauge{{$s->id}}-{{$p->id}}" style="height:350px;">
-                        {{$p->name}}
-                    </div>
+    <div class="row">
+        @foreach ($sensors as $s)
+        <div class="col-md-6">
+            <div class="panel panel-info" style="background-color:transparent;">
+                <div class="panel-heading text-center">
+                    <span style="font-size:20px;">{{ strtoupper($s->position) }}</span>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        @foreach ($s->params as $p)
+                        <div class="col-md-4 text-center">
+                            <div id="gauge{{$s->id}}-{{$p->id}}" style="height:180px;">
+                                {{$p->name}}
+                            </div>
 
-                    <div class="alert alert-success text-center">
-                        <span style="font-size:20px;">NORMAL</span>
+                            <div class="alert alert-success text-center">
+                                <span style="font-size:16px;">NORMAL</span>
+                            </div>
+                        </div>
+                        @endforeach
                     </div>
                 </div>
-                @endforeach
             </div>
         </div>
+        @endforeach
     </div>
-    @endforeach
-
 </div>
 @endsection
 
@@ -60,7 +63,7 @@
             axisLine: {
                 show: true,
                 lineStyle: {
-                    width: 15,
+                    width: 5,
                     color: [
                         [{{$p->min_value/$p->gauge_end}}, '#ff4500'],
                         [{{$p->lo_value/$p->gauge_end}},'orange'],
@@ -72,13 +75,14 @@
             },
             axisLabel: {
                 color : '#fff',
+                fontSize: 9
             },
             axisTick: {
                 show : false
             },
             splitLine: {
                 show: false,
-                length: 18,
+                length: 3,
             },
             pointer: {
                 length: '65%',
@@ -87,7 +91,7 @@
             },
             title: {
                 show: true,
-                offsetCenter: ['0%', 90],
+                offsetCenter: ['0%', 60],
                 textStyle: {
                     color: '#999',
                     fontSize: 15
@@ -98,7 +102,7 @@
                 formatter: '{value}{{$p->unit}}',
                 textStyle: {
                     color: 'auto',
-                    fontSize: 30
+                    fontSize: 15
                 }
             },
             data: [{value: 0, name: ''}]
