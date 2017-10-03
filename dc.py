@@ -90,12 +90,16 @@ sensor_front = Sensor('/dev/arduino3')
 sensor_rear = Sensor('/dev/arduino2')
 
 def cek_all():
-    data = sensor_front.get_all()
-    suhu = int(data[0])
-    kelembaban = int(data[1])
-    gas = int(data[2])
-    pintu = int(data[3])
-    arus = float(data[4])
+    try:
+        data = sensor_front.get_all()
+        print data
+        # suhu = int(data[0])
+        # kelembaban = int(data[1])
+        # gas = int(data[2])
+        # pintu = int(data[3])
+        # arus = float(data[4])
+    except Exception as e:
+        print "gagal"
 
     # insert to database
 
