@@ -74,7 +74,7 @@ class Sensor:
     def get_arus(self):
         self.my_serial.write('arus')
         arus = self.my_serial.readline()
-        return int(arus)
+        return float(arus)
 
     def get_all(self):
         self.my_serial.write('all')
@@ -95,7 +95,7 @@ def cek_all():
     kelembaban = int(data[1])
     gas = int(data[2])
     pintu = int(data[3])
-    arus = int(data[4])
+    arus = float(data[4])
 
     # insert to database
 
