@@ -7,7 +7,7 @@ from threading import Thread
 class Pac:
     def __init__(self):
         try:
-            self.my_serial = serial.Serial('/dev/ttyACM1', baudrate=9600, timeout=1)
+            self.my_serial = serial.Serial('/dev/arduino1', baudrate=9600, timeout=1)
             # print "DC controller found"
         except Exception as e:
             print "DC controller not found!"
@@ -57,7 +57,7 @@ class Sensor:
         return int(suhu)
 
     def get_kelembaban(self):
-        self.my_serial.write('kelembaban')
+        self.my_serial.write('lembab')
         kelembaban = self.my_serial.readline()
         return int(kelembaban)
 
@@ -71,23 +71,23 @@ class Sensor:
         pintu = self.my_serial.readline()
         return int(pintu)
 
+    def get_arus(self):
+        self.my_serial.write('arus')
+        arus = self.my_serial.readline()
+        return int(arus)
+
     def get_all(self):
         self.my_serial.write('all')
         data = self.my_serial.readline()
+        # suhu, lembab, gas, pintu, arus
         return data.split(",")
-
-    def get_arus(self):
-        # self.my_serial.write('arus')
-        # arus = self.my_serial.readline()
-        arus = random.uniform(0, 100)
-        return int(arus)
 
     def close_serial(self):
         self.my_serial.close()
 
 pac = Pac()
-sensor_front = Sensor('/dev/ttyACM0')
-db =
+sensor_front = Sensor('/dev/arduino3')
+sensor_rear = Sensor('/dev/arduino2')
 
 def cek_all():
     data = sensor_front.get_all()
@@ -95,6 +95,7 @@ def cek_all():
     kelembaban = int(data[1])
     gas = int(data[2])
     pintu = int(data[3])
+    arus = int(data[4])
 
     # insert to database
 

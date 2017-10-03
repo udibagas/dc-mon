@@ -1,9 +1,11 @@
 #include <dht11.h>
 #include <elapsedMillis.h>
+#include "EmonLib.h"
 #define interval 10000
 
 elapsedMillis timer0;
 dht11 DHT11;
+EnergyMonitor emon1;
 
 // Pin digital
 const int PIN_DHT = 2;
@@ -16,12 +18,12 @@ const int PIN_ARUS = A1;
 static int gas = 0;
 static int suhu = 0;
 static int kelembaban = 0;
+static float arus = 0;
+
 
 void setup() {
     timer0 = 0;
-    pinMode(PIN_DHT, OUTPUT);
-    pinMode(PIN_SENSOR_GAS, OUTPUT);
-
+    emon1.current(PIN_ARUS, 30);
     pinMode(PIN_PINTU, INPUT_PULLUP);
     Serial.begin(9600);
 }
@@ -34,6 +36,10 @@ void loop() {
 
     int analogGas = analogRead(PIN_SENSOR_GAS);
     int gasNow = map(analogGas, 0, 1023, 0, 255);
+
+    double Irms = emon1.calcIrms(1480);  // Calculate Irms only
+    // daya = Irms*220.0;
+    arus = Irms;
 
     if (gasNow > 0 || gasNow > gas) {
         gas = gasNow;
@@ -60,8 +66,9 @@ void loop() {
     // Serial.println(suhu);
     // Serial.print("Pintu:");
     // Serial.println(pintu);
-    //
-    // delay(3000);
+    // Serial.print("Arus:");
+    // Serial.println(arus);
+    // Serial.println("------------------------------");
 
     boolean cmdOk = true;
     String cmd = "";
@@ -84,7 +91,7 @@ void loop() {
     }
 
     // UNTUK BACA KELEMBABAN
-    else if (cmd == "kelembaban") {
+    else if (cmd == "lembab") {
         Serial.println(kelembaban);
     }
 
@@ -99,6 +106,11 @@ void loop() {
     }
 
     // UNTUK BACA STATUS PINTU
+    else if (cmd == "arus") {
+        Serial.println(arus);
+    }
+
+    // UNTUK BACA STATUS PINTU
     else if (cmd == "all") {
         Serial.print(suhu);
         Serial.print(",");
@@ -107,6 +119,8 @@ void loop() {
         Serial.print(gas);
         Serial.print(",");
         Serial.print(pintu);
+        Serial.print(",");
+        Serial.print(arus);
     }
 
     else {
@@ -119,6 +133,8 @@ void loop() {
         Serial.println("---------------------------------------------");
         Serial.println("gas \t\t: Membaca nilai gas");
         Serial.println("suhu \t\t: Membaca nilai suhu");
-        Serial.println("kelembaban \t: Membaca nilai kelembaban");
+        Serial.println("lembab \t: Membaca nilai kelembaban");
+        Serial.println("arus \t: Membaca nilai arus");
+        Serial.println("pintu \t: Membaca status pintu");
     }
 }

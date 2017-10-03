@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid" id="app1">
     <div class="row">
         @foreach ($sensors as $s)
         <div class="col-md-6">
@@ -28,6 +28,9 @@
         </div>
         @endforeach
     </div>
+
+    <img src="{{asset('images/fan.png')}}" alt="" class="spin">
+    <example> </example>
 </div>
 @endsection
 
@@ -123,6 +126,8 @@
 
         @endforeach
     @endforeach
+
 </script>
+
 
 @endpush

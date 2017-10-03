@@ -17,6 +17,17 @@ window.Vue = require('vue');
 
 Vue.component('example', require('./components/Example.vue'));
 
-const app = new Vue({
-    el: '#app'
+// const app = new Vue({
+//     el: '#app'
+// });
+
+const app1 = new Vue({
+    el: '#app1',
+    data: {
+        name: "bagas",
+        email: "udibagas@gmail.com"
+    },
+    methods: {
+        aaa: function() {alert('aaa')}
+    }
 });
