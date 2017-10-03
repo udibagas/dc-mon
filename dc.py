@@ -164,7 +164,7 @@ if __name__ == "__main__":
         pac.turn_off()
         pac.close_serial()
         sensor_front.close_serial()
-        # sensor_rear.close_serial()
+        sensor_rear.close_serial()
 
 
     # untuk console
