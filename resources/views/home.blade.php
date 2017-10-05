@@ -29,8 +29,8 @@
         @endforeach
     </div>
 
-    <img src="{{asset('images/fan.png')}}" alt="" class="spin">
-    <example> </example>
+    <!-- <img src="{{asset('images/fan.png')}}" alt="" class="spin">
+    <example> </example> -->
 </div>
 @endsection
 

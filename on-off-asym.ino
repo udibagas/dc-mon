@@ -34,8 +34,8 @@ void setup() {
 }
 
 void loop() {
-    delay(5*60*1000)
+    delay(300000) // durasi nyala
     digitalWrite(PIN_COMPRESSOR, HIGH);
-    delay(3*60*1000)
+    delay(180000) // durasi mati
     digitalWrite(PIN_COMPRESSOR, LOW);
 }
