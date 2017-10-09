@@ -29,9 +29,9 @@ void setup() {
     pinMode(PIN_HEATER, OUTPUT);
     pinMode(PIN_HI_PRESSURE, INPUT_PULLUP);
 
-    // digitalWrite(PIN_FAN, HIGH);
-    // digitalWrite(PIN_COMPRESSOR, HIGH);
-    
+    // default matikan dulu semua
+    digitalWrite(PIN_FAN, HIGH);
+    digitalWrite(PIN_COMPRESSOR, HIGH);
     digitalWrite(PIN_LAMPU, HIGH);
     digitalWrite(PIN_HEATER, HIGH);
     digitalWrite(PIN_FIRE_ON, HIGH);
@@ -41,17 +41,17 @@ void setup() {
 }
 
 void loop() {
-    if (timer0 > interval) {
-        timer0 -= interval;
-        nyala = !nyala;
-        digitalWrite(PIN_COMPRESSOR, !nyala)
-    }
+    // if (timer0 > interval) {
+    //     timer0 -= interval;
+    //     nyala = !nyala;
+    //     digitalWrite(PIN_COMPRESSOR, !nyala)
+    // }
 
     boolean cmdOk = true;
     String cmd = "";
 
+    // detect high pressure
     int hiPressure = digitalRead(PIN_HI_PRESSURE);
-
     if (hiPressure == LOW) {
         digitalWrite(PIN_FAN, HIGH);
         digitalWrite(PIN_COMPRESSOR, HIGH);
@@ -131,6 +131,10 @@ void loop() {
         digitalWrite(PIN_FAN, HIGH);
         digitalWrite(PIN_HEATER, HIGH);
         Serial.println("OK");
+    }
+
+    else if (cmd == "highpress status") {
+        Serial.println(hiPressure);
     }
 
     else {
