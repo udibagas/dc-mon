@@ -1,5 +1,4 @@
 import serial
-import time
 
 class Pac:
     def __init__(self):
@@ -28,6 +27,10 @@ class Pac:
 
     def set_lamp(self, set):
         self.my_serial.write('lamp ' + set)
+        return self.my_serial.readline()
+
+    def highpress_status(self):
+        self.my_serial.write('highpress status')
         return self.my_serial.readline()
 
     def turn_off(self):

@@ -1,5 +1,4 @@
 import serial
-import time
 
 class Sensor:
     def __init__(self, interface):
@@ -13,10 +12,9 @@ class Sensor:
     def get_suhu(self):
         self.my_serial.write('suhu')
         suhu = self.my_serial.readline()
-        # suhu = random.uniform(19, 25)
         return int(suhu)
 
-    def get_kelembaban(self):
+    def get_lembab(self):
         self.my_serial.write('lembab')
         kelembaban = self.my_serial.readline()
         return int(kelembaban)
