@@ -51,7 +51,7 @@ def cek_all():
         pass
 
     # paling urgent cek gas dulu
-    if gas_depan > kalibrasi_gas_depan or gas_belakang > kalibrasi_gas_belakang:
+    if cek_gas and (gas_depan > kalibrasi_gas_depan or gas_belakang > kalibrasi_gas_belakang):
         # increase counter
         gas_counter += 1
 
@@ -93,6 +93,7 @@ sensor_belakang = Sensor('/dev/arduino2')
 kalibrasi_gas_depan = 90
 kalibrasi_gas_belakang = 90
 gas_counter = 0
+cek_gas = False
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "run":
@@ -131,6 +132,9 @@ if __name__ == "__main__":
             elif cmd == "pintu depan":
                 print str(sensor_depan.get_pintu())
 
+            elif cmd == "all depan":
+                print str(sensor_depan.get_all())
+
             elif cmd == "suhu belakang":
                 print str(sensor_belakang.get_suhu())
 
@@ -145,6 +149,9 @@ if __name__ == "__main__":
 
             elif cmd == "pintu belakang":
                 print str(sensor_belakang.get_pintu())
+
+            elif cmd == "all belakang":
+                print str(sensor_belakang.get_all())
 
             elif cmd == "set fan on":
                 print str(pac1.set_fan("on"))
