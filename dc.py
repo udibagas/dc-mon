@@ -91,11 +91,6 @@ def cek_all():
             if lembab_depan > 60 or lembab_belakang > 60:
                 pac1.set_heater('on')
 
-        print "Pintu : " + str(pintu)
-
-        # ga kepake
-        # if pintu:
-        #     pac1.set_lamp('on')
 
 pac1 = Pac()
 sensor_depan = Sensor('/dev/arduino3')
