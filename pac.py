@@ -39,4 +39,3 @@ class Pac:
 
     def close_serial(self):
         self.my_serial.close()
-        return self.my_serial.readline()
