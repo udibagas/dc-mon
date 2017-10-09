@@ -3,6 +3,7 @@ from threading import Thread
 from pac import Pac
 from sensor import Sensor
 import requests
+import sys
 
 def cek_all():
     global gas_counter
