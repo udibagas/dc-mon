@@ -82,9 +82,6 @@ def cek_all():
                 time.sleep(20)
                 pac1.set_fire('off')
 
-        print "Suhu : " + str(suhu)
-        print "Kelembaban : " + str(kelembaban)
-
         if suhu_depan < 20 or suhu_belakang < 20:
             pac1.set_compressor('off')
 
