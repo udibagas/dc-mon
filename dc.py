@@ -4,6 +4,7 @@ from pac import Pac
 from sensor import Sensor
 import requests
 import sys
+import sqlite3
 
 def cek_all():
     global gas_counter
