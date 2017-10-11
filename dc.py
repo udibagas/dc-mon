@@ -82,14 +82,16 @@ def cek_all():
                 time.sleep(20)
                 pac1.set_fire('off')
 
-        if suhu_depan < 20 or suhu_belakang < 20:
+        # if suhu_depan < 20 or suhu_belakang < 20:
+        if suhu_depan < 20:
             pac1.set_compressor('off')
 
-        if suhu_depan > 24 or lembab_depan < 40 or suhu_belakang > 28 or lembab_belakang < 40:
+        # if suhu_depan > 24 or lembab_depan < 40 or suhu_belakang > 28 or lembab_belakang < 40:
+        if suhu_depan > 24:
             pac1.set_compressor('on')
 
-            if lembab_depan > 60 or lembab_belakang > 60:
-                pac1.set_heater('on')
+            # if lembab_depan > 60 or lembab_belakang > 60:
+            #     pac1.set_heater('on')
 
 
 pac1 = Pac()
