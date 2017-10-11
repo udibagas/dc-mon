@@ -24,7 +24,7 @@ def cek_all():
         gas_depan = int(data_depan[2])
         pintu_depan = int(data_depan[3])
         arus_input_ets = float(data_depan[4])
-        print data_depan
+        print "Depan" + data_depan
 
     except Exception as e:
         print "GAGAL MEMBACA SENSOR DEPAN"
@@ -48,7 +48,7 @@ def cek_all():
         gas_belakang = int(data_belakang[2])
         pintu_belakang = int(data_belakang[3])
         arus_input_ups = float(data_belakang[4])
-        print data_belakang
+        print "Belakang:" + data_belakang
 
     except Exception as e:
         print "GAGAL MEMBACA SENSOR BELAKANG"
@@ -63,6 +63,12 @@ def cek_all():
             pass
 
     if data_depan_ok or data_belakang_ok:
+        # input ke local db (sqite)
+        cur = db_con.cursor()
+        cur.execute("INSERT INTO `log` (`suhu_depan`, `suhu_belakang`, `lembab_depan`, `lembab_belakang`, `gas_depan`, `gas_belakang`, `arus_input_ets`, `arus_input_ups`, `pintu_depan`, `pintu_belakang`) VALUES (?,?,?,?,?,?,?,?,?,?)", (suhu_depan,suhu_belakang,lembab_depan,lembab_belakang,gas_depan,gas_belakang,arus_input_ets,arus_input_ups,pintu_depan,pintu_belakang))
+        cur.close()
+        db_con.commit()
+
         # paling urgent cek gas dulu
         if cek_gas and (gas_depan > kalibrasi_gas_depan or gas_belakang > kalibrasi_gas_belakang):
             # increase counter
@@ -111,6 +117,22 @@ data_depan_ok = False
 data_belakang_ok = False
 
 if __name__ == "__main__":
+    db_con = sqlite3.connect("dc.db", check_same_thread = False)
+
+    db_con.execute("CREATE TABLE IF NOT EXISTS `log` ( \
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT, \
+        `suhu_depan` int(11) NOT NULL, \
+        `suhu_belakang` int(11) NOT NULL, \
+        `lembab_depan` int(11) NOT NULL, \
+        `lembab_belakang` int(11) NOT NULL, \
+        `gas_depan` int(11) NOT NULL, \
+        `gas_belakang` int(11) NOT NULL, \
+        `arus_input_ets` int(11) NOT NULL, \
+        `arus_input_ups` int(11) NOT NULL, \
+        `pintu_depan` int(11) NOT NULL, \
+        `pintu_belakang` int(11) NOT NULL, \
+        `waktu` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)")
+
     if len(sys.argv) > 1 and sys.argv[1] == "run":
         pac1.set_fan("on")
         time.sleep(3)
