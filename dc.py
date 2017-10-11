@@ -25,7 +25,7 @@ def cek_all():
         gas_depan = int(data_depan[2])
         pintu_depan = int(data_depan[3])
         arus_input_ets = float(data_depan[4])
-        print "Depan" + data_depan
+        print "Depan" + str(data_depan)
 
     except Exception as e:
         print "GAGAL MEMBACA SENSOR DEPAN"
@@ -49,7 +49,7 @@ def cek_all():
         gas_belakang = int(data_belakang[2])
         pintu_belakang = int(data_belakang[3])
         arus_input_ups = float(data_belakang[4])
-        print "Belakang:" + data_belakang
+        print "Belakang:" + str(data_belakang)
 
     except Exception as e:
         print "GAGAL MEMBACA SENSOR BELAKANG"
