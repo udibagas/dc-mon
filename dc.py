@@ -19,7 +19,6 @@ def cek_all():
     global data_belakang_ok
 
     try:
-        logger.debug("Ambil data sensor depan")
         data_depan = sensor_depan.get_all()
         data_depan_ok = True
         suhu_depan = int(data_depan[0])
@@ -51,7 +50,6 @@ def cek_all():
             pass
 
     try:
-        logger.debug("Ambil data sensor belakang")
         data_belakang = sensor_belakang.get_all()
         data_belakang_ok = True
         suhu_belakang = int(data_belakang[0])
@@ -146,7 +144,7 @@ if __name__ == "__main__":
         pac1 = Pac()
         logger.info("PAC Controller OK!")
     except Exception as e:
-        logger.info("PAC Controller Not Found!")
+        logger.info("PAC Controller tidak ditemukan!")
 
     try:
         logger.debug("Inisiasi Sensor depan...")
@@ -181,7 +179,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "run":
         logger.debug("Menghidupkan fan ...")
         fan = pac1.set_fan("on")
-        logger.debug("FAN status : " + fan)
+        logger.debug("FAN status : " + str(fan))
         logger.debug("Checking environment...")
         time.sleep(3)
 
