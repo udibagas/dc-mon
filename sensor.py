@@ -4,9 +4,7 @@ class Sensor:
     def __init__(self, interface):
         try:
             self.my_serial = serial.Serial(interface, baudrate=9600, timeout=1)
-            # print "Sensor found"
         except Exception as e:
-            print "Sensor not found"
             exit(0)
 
     def get_suhu(self):

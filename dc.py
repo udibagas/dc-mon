@@ -117,23 +117,6 @@ def cek_all():
             # if lembab_depan > 60 or lembab_belakang > 60:
             #     pac1.set_heater('on')
 
-
-pac1 = Pac()
-sensor_depan = Sensor('/dev/arduino3')
-sensor_belakang = Sensor('/dev/arduino2')
-kalibrasi_gas_depan = 90
-kalibrasi_gas_belakang = 90
-gas_counter = 0
-cek_gas = False
-suhu_depan = 0
-lembab_depan = 0
-gas_depan = 0
-suhu_belakang = 0
-lembab_belakang = 0
-gas_belakang = 0
-data_depan_ok = False
-data_belakang_ok = False
-
 def init_db():
     db_con.execute("CREATE TABLE IF NOT EXISTS `log` ( \
         `id` INTEGER PRIMARY KEY AUTOINCREMENT, \
@@ -154,10 +137,25 @@ if __name__ == "__main__":
     logger.setLevel(logging.INFO)
     handler = logging.FileHandler('dc.log')
     handler.setLevel(logging.INFO)
-    # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
+
+    pac1 = Pac()
+    sensor_depan = Sensor('/dev/arduino3')
+    sensor_belakang = Sensor('/dev/arduino2')
+    kalibrasi_gas_depan = 90
+    kalibrasi_gas_belakang = 90
+    gas_counter = 0
+    cek_gas = False
+    suhu_depan = 0
+    lembab_depan = 0
+    gas_depan = 0
+    suhu_belakang = 0
+    lembab_belakang = 0
+    gas_belakang = 0
+    data_depan_ok = False
+    data_belakang_ok = False
 
     # db_con = sqlite3.connect("dc.db", check_same_thread = False)
     # init_db()

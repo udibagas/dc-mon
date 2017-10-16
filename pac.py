@@ -4,9 +4,7 @@ class Pac:
     def __init__(self):
         try:
             self.my_serial = serial.Serial('/dev/arduino1', baudrate=9600, timeout=1)
-            # print "DC controller found"
         except Exception as e:
-            print "DC controller not found!"
             exit(0)
 
     def set_compressor(self, set):
