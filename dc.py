@@ -109,7 +109,7 @@ def cek_all():
                 pac1.set_compressor('off')
 
         # if suhu_depan > 24 or lembab_depan < 40 or suhu_belakang > 28 or lembab_belakang < 40:
-        if suhu_depan > 24:
+        if suhu_depan > 23:
             if not compressor_on:
                 logger.info("Suhu depan > 24. Compressor ON")
                 pac1.set_compressor('on')
