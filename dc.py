@@ -5,6 +5,7 @@ from sensor import Sensor
 import requests
 import sys
 import sqlite3
+import logging
 
 def cek_all():
     global gas_counter
@@ -18,6 +19,7 @@ def cek_all():
     global data_belakang_ok
 
     try:
+        logger.debug("Ambil data sensor depan")
         data_depan = sensor_depan.get_all()
         data_depan_ok = True
         suhu_depan = int(data_depan[0])
@@ -25,10 +27,17 @@ def cek_all():
         gas_depan = int(data_depan[2])
         pintu_depan = int(data_depan[3])
         arus_input_ets = float(data_depan[4])
-        print "Depan" + str(data_depan)
+
+        logger.info(
+            "[DEPAN] suhu: " + suhu_depan
+            + ", lembab: " + lembab_depan
+            + ", gas: " + gas_depan
+            + ", pintu: " + pintu_depan
+            + ", arus:" + arus_input_ets
+        )
 
     except Exception as e:
-        print "GAGAL MEMBACA SENSOR DEPAN"
+        logger.error("GAGAL MEMBACA SENSOR DEPAN")
 
     # insert to database (local & unitron)
     if data_depan_ok:
@@ -49,10 +58,17 @@ def cek_all():
         gas_belakang = int(data_belakang[2])
         pintu_belakang = int(data_belakang[3])
         arus_input_ups = float(data_belakang[4])
-        print "Belakang:" + str(data_belakang)
+
+        logger.info(
+            "[BELAKANG] suhu: " + suhu_depan
+            + ", lembab: " + lembab_depan
+            + ", gas: " + gas_depan
+            + ", pintu: " + pintu_depan
+            + ", arus:" + arus_input_ups
+        )
 
     except Exception as e:
-        print "GAGAL MEMBACA SENSOR BELAKANG"
+        logger.error("GAGAL MEMBACA SENSOR BELAKANG")
 
     if data_belakang_ok:
         # insert to database (local & unitron)
@@ -65,10 +81,10 @@ def cek_all():
 
     if data_depan_ok or data_belakang_ok:
         # input ke local db (sqite)
-        cur = db_con.cursor()
-        cur.execute("INSERT INTO `log` (`suhu_depan`, `suhu_belakang`, `lembab_depan`, `lembab_belakang`, `gas_depan`, `gas_belakang`, `arus_input_ets`, `arus_input_ups`, `pintu_depan`, `pintu_belakang`) VALUES (?,?,?,?,?,?,?,?,?,?)", (suhu_depan,suhu_belakang,lembab_depan,lembab_belakang,gas_depan,gas_belakang,arus_input_ets,arus_input_ups,pintu_depan,pintu_belakang))
-        cur.close()
-        db_con.commit()
+        # cur = db_con.cursor()
+        # cur.execute("INSERT INTO `log` (`suhu_depan`, `suhu_belakang`, `lembab_depan`, `lembab_belakang`, `gas_depan`, `gas_belakang`, `arus_input_ets`, `arus_input_ups`, `pintu_depan`, `pintu_belakang`) VALUES (?,?,?,?,?,?,?,?,?,?)", (suhu_depan,suhu_belakang,lembab_depan,lembab_belakang,gas_depan,gas_belakang,arus_input_ets,arus_input_ups,pintu_depan,pintu_belakang))
+        # cur.close()
+        # db_con.commit()
 
         # paling urgent cek gas dulu
         if cek_gas and (gas_depan > kalibrasi_gas_depan or gas_belakang > kalibrasi_gas_belakang):
@@ -117,9 +133,7 @@ gas_belakang = 0
 data_depan_ok = False
 data_belakang_ok = False
 
-if __name__ == "__main__":
-    db_con = sqlite3.connect("dc.db", check_same_thread = False)
-
+def init_db():
     db_con.execute("CREATE TABLE IF NOT EXISTS `log` ( \
         `id` INTEGER PRIMARY KEY AUTOINCREMENT, \
         `suhu_depan` int(11) NOT NULL, \
@@ -133,6 +147,18 @@ if __name__ == "__main__":
         `pintu_depan` int(11) NOT NULL, \
         `pintu_belakang` int(11) NOT NULL, \
         `waktu` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)")
+
+if __name__ == "__main__":
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    handler = logging.FileHandler('dc.log')
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    # db_con = sqlite3.connect("dc.db", check_same_thread = False)
+    # init_db()
 
     if len(sys.argv) > 1 and sys.argv[1] == "run":
         pac1.set_fan("on")
