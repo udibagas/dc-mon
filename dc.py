@@ -29,10 +29,10 @@ def cek_all():
         arus_input_ets = float(data_depan[4])
 
         logger.info(
-            "[DEPAN] suhu: " + str(suhu_depan)
-            + ", lembab: " + str(lembab_depan)
-            + ", gas: " + str(gas_depan)
-            + ", pintu: " + str(pintu_depan)
+            "[DEPAN] suhu:" + str(suhu_depan)
+            + ", lembab:" + str(lembab_depan)
+            + ", gas:" + str(gas_depan)
+            + ", pintu:" + str(pintu_depan)
             + ", arus:" + str(arus_input_ets)
         )
 
@@ -61,10 +61,10 @@ def cek_all():
         arus_input_ups = float(data_belakang[4])
 
         logger.info(
-            "[BELAKANG] suhu: " + str(suhu_belak)
-            + ", lembab: " + str(lembab_belak)
-            + ", gas: " + str(gas_belak)
-            + ", pintu: " + str(pintu_belakang)
+            "[BELAKANG] suhu: " + str(suhu_belakang)
+            + ", lembab:" + str(lembab_belakang)
+            + ", gas:" + str(gas_belakang)
+            + ", pintu:" + str(pintu_belakang)
             + ", arus:" + str(arus_input_ups)
         )
 
@@ -151,9 +151,9 @@ def init_db():
 
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     handler = logging.FileHandler('dc.log')
-    handler.setLevel(logging.DEBUG)
+    handler.setLevel(logging.INFO)
     # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
