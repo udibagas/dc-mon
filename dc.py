@@ -37,7 +37,7 @@ def cek_all():
         )
 
     except Exception as e:
-        logger.error("GAGAL MEMBACA SENSOR DEPAN")
+        logger.error("Gagal membaca sensor depan")
 
     # insert to database (local & unitron)
     if data_depan_ok:
@@ -69,7 +69,7 @@ def cek_all():
         )
 
     except Exception as e:
-        logger.error("GAGAL MEMBACA SENSOR BELAKANG")
+        logger.error("Gagal membaca sensor belakang")
 
     if data_belakang_ok:
         # insert to database (local & unitron)
@@ -141,9 +141,27 @@ if __name__ == "__main__":
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    pac1 = Pac()
-    sensor_depan = Sensor('/dev/arduino3')
-    sensor_belakang = Sensor('/dev/arduino2')
+    try:
+        logger.debug("Inisiasi PAC controller...")
+        pac1 = Pac()
+        logger.info("PAC Controller OK!")
+    except Exception as e:
+        logger.info("PAC Controller Not Found!")
+
+    try:
+        logger.debug("Inisiasi Sensor depan...")
+        sensor_depan = Sensor('/dev/arduino3')
+        logger.info("Sensor depan OK!")
+    except Exception as e:
+        logger.info("Sensor depan tidak ditemukan!")
+
+    try:
+        logger.debug("Inisiasi Sensor belakang...")
+        sensor_belakang = Sensor('/dev/arduino2')
+        logger.info("Sensor belakang OK!")
+    except Exception as e:
+        logger.info("Sensor belakang tidak ditemukan!")
+
     kalibrasi_gas_depan = 90
     kalibrasi_gas_belakang = 90
     gas_counter = 0
