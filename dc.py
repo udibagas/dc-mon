@@ -95,23 +95,23 @@ def cek_all():
             if gas_counter == 3:
                 # reset counter
                 gas_counter = 0
-                # matikan ac dulu
-                print "----------------------"
-                print "gas detected. pac off"
+                logger.info("Gas terdeteksi!!!")
+                logger.info("PAC OFF")
                 pac1.turn_off()
-                # hidupkan fire suppression selama 5 detik
-                print "fire suppression on"
-                print "----------------------"
+                logger.info("Fire suppression ON")
                 pac1.set_fire('on')
                 time.sleep(20)
+                logger.info("Fire suppression OFF")
                 pac1.set_fire('off')
 
         # if suhu_depan < 20 or suhu_belakang < 20:
         if suhu_depan < 20:
+            logger.info("Suhu depan < 20. Compressor OFF")
             pac1.set_compressor('off')
 
         # if suhu_depan > 24 or lembab_depan < 40 or suhu_belakang > 28 or lembab_belakang < 40:
         if suhu_depan > 24:
+            logger.info("Suhu depan > 24. Compressor ON")
             pac1.set_compressor('on')
 
             # if lembab_depan > 60 or lembab_belakang > 60:
@@ -163,8 +163,10 @@ if __name__ == "__main__":
     # init_db()
 
     if len(sys.argv) > 1 and sys.argv[1] == "run":
+        logger.info("Fan ON")
         pac1.set_fan("on")
         time.sleep(3)
+        logger.info("Checking environment")
 
         try:
             while True:
