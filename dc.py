@@ -29,11 +29,11 @@ def cek_all():
         arus_input_ets = float(data_depan[4])
 
         logger.info(
-            "[DEPAN] suhu: " + suhu_depan
-            + ", lembab: " + lembab_depan
-            + ", gas: " + gas_depan
-            + ", pintu: " + pintu_depan
-            + ", arus:" + arus_input_ets
+            "[DEPAN] suhu: " + str(suhu_depan)
+            + ", lembab: " + str(lembab_depan)
+            + ", gas: " + str(gas_depan)
+            + ", pintu: " + str(pintu_depan)
+            + ", arus:" + str(arus_input_ets)
         )
 
     except Exception as e:
@@ -51,6 +51,7 @@ def cek_all():
             pass
 
     try:
+        logger.debug("Ambil data sensor belakang")
         data_belakang = sensor_belakang.get_all()
         data_belakang_ok = True
         suhu_belakang = int(data_belakang[0])
@@ -60,11 +61,11 @@ def cek_all():
         arus_input_ups = float(data_belakang[4])
 
         logger.info(
-            "[BELAKANG] suhu: " + suhu_depan
-            + ", lembab: " + lembab_depan
-            + ", gas: " + gas_depan
-            + ", pintu: " + pintu_depan
-            + ", arus:" + arus_input_ups
+            "[BELAKANG] suhu: " + str(suhu_belak)
+            + ", lembab: " + str(lembab_belak)
+            + ", gas: " + str(gas_belak)
+            + ", pintu: " + str(pintu_belakang)
+            + ", arus:" + str(arus_input_ups)
         )
 
     except Exception as e:
