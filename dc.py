@@ -29,7 +29,7 @@ def cek_all():
         arus_input_ets = float(data_depan[4])
 
         logger.info(
-            "[DEPAN] suhu:" + str(suhu_depan)
+            "[DPN] suhu:" + str(suhu_depan)
             + ", lembab:" + str(lembab_depan)
             + ", gas:" + str(gas_depan)
             + ", pintu:" + str(pintu_depan)
@@ -61,7 +61,7 @@ def cek_all():
         arus_input_ups = float(data_belakang[4])
 
         logger.info(
-            "[BELAKANG] suhu: " + str(suhu_belakang)
+            "[BLK] suhu: " + str(suhu_belakang)
             + ", lembab:" + str(lembab_belakang)
             + ", gas:" + str(gas_belakang)
             + ", pintu:" + str(pintu_belakang)
@@ -134,9 +134,9 @@ def init_db():
 
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     handler = logging.FileHandler('dc.log')
-    handler.setLevel(logging.INFO)
+    handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
@@ -161,10 +161,11 @@ if __name__ == "__main__":
     # init_db()
 
     if len(sys.argv) > 1 and sys.argv[1] == "run":
-        logger.info("Fan ON")
-        pac1.set_fan("on")
+        logger.debug("Menghidupkan fan ...")
+        fan = pac1.set_fan("on")
+        logger.debug("FAN status : " + fan)
+        logger.debug("Checking environment...")
         time.sleep(3)
-        logger.info("Checking environment")
 
         try:
             while True:
