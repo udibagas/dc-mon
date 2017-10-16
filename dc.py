@@ -59,7 +59,7 @@ def cek_all():
         arus_input_ups = float(data_belakang[4])
 
         logger.info(
-            "[BLK] suhu: " + str(suhu_belakang)
+            "[BLK] suhu:" + str(suhu_belakang)
             + ", lembab:" + str(lembab_belakang)
             + ", gas:" + str(gas_belakang)
             + ", pintu:" + str(pintu_belakang)
@@ -105,12 +105,14 @@ def cek_all():
         # if suhu_depan < 20 or suhu_belakang < 20:
         if suhu_depan < 20:
             logger.info("Suhu depan < 20. Compressor OFF")
-            pac1.set_compressor('off')
+            if compressor_on:
+                pac1.set_compressor('off')
 
         # if suhu_depan > 24 or lembab_depan < 40 or suhu_belakang > 28 or lembab_belakang < 40:
         if suhu_depan > 24:
             logger.info("Suhu depan > 24. Compressor ON")
-            pac1.set_compressor('on')
+            if not compressor_on:
+                pac1.set_compressor('on')
 
             # if lembab_depan > 60 or lembab_belakang > 60:
             #     pac1.set_heater('on')
@@ -172,14 +174,19 @@ if __name__ == "__main__":
     gas_belakang = 0
     data_depan_ok = False
     data_belakang_ok = False
+    fan_on = False
+    compressor_on = False
 
     # db_con = sqlite3.connect("dc.db", check_same_thread = False)
     # init_db()
 
     if len(sys.argv) > 1 and sys.argv[1] == "run":
+        logger.debug("Tunda biar serial siap dulu...")
+        time.sleep()
         logger.debug("Menghidupkan fan ...")
         fan = pac1.set_fan("on")
         logger.debug("FAN status : " + str(fan))
+        fan_on = True
         logger.debug("Checking environment...")
         time.sleep(3)
 
