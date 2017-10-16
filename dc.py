@@ -183,7 +183,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "run":
         logger.debug("Tunda biar serial siap dulu...")
         time.sleep(3)
-        logger.debug("Menghidupkan fan ...")
+        logger.debug("Menghidupkan fan...")
         fan = pac1.set_fan("on")
         logger.debug("FAN status : " + str(fan))
         fan_on = True
