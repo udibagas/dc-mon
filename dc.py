@@ -17,6 +17,8 @@ def cek_all():
     global gas_belakang
     global data_depan_ok
     global data_belakang_ok
+    global compressor_on
+    global fan_on
 
     try:
         data_depan = sensor_depan.get_all()
