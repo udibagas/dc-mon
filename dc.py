@@ -23,6 +23,11 @@ def cek_all():
     global compressor_on
     global fan_on
 
+    if compressor_on:
+        compressor_status = "ON"
+    else:
+        compressor_status = "OFF"
+
     try:
         data_depan = sensor_depan.get_all()
         data_depan_ok = True
@@ -38,6 +43,7 @@ def cek_all():
             + ", gas:" + str(gas_depan)
             + ", pintu:" + str(pintu_depan)
             + ", arus:" + str(arus_input_ets)
+            + ", compressor: " + compressor_status
         )
 
     except Exception as e:
@@ -69,6 +75,7 @@ def cek_all():
             + ", gas:" + str(gas_belakang)
             + ", pintu:" + str(pintu_belakang)
             + ", arus:" + str(arus_input_ups)
+            + ", compressor: " + compressor_status
         )
 
     except Exception as e:
