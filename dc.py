@@ -8,6 +8,7 @@ import sqlite3
 import logging
 import logging.handlers
 import os.path
+import json
 
 def cek_all():
     global gas_counter
