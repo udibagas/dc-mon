@@ -125,7 +125,7 @@ def cek_all():
         if suhu_depan > config["max_value"]["suhu_depan"]:
             if not compressor_on:
                 compressor_on = True
-                logger.info("SUHU DEPAN > " + config["max_value"]["suhu_depan"] + ". COMPRESSOR ON")
+                logger.info("SUHU DEPAN > " + str(config["max_value"]["suhu_depan"]) + ". COMPRESSOR ON")
                 pac1.set_compressor('on')
 
             # if lembab_depan > 60 or lembab_belakang > 60:
