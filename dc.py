@@ -6,6 +6,7 @@ import requests
 import sys
 import sqlite3
 import logging
+import os.path
 
 def cek_all():
     global gas_counter
@@ -105,17 +106,17 @@ def cek_all():
                 pac1.set_fire('off')
 
         # if suhu_depan < 20 or suhu_belakang < 20:
-        if suhu_depan < 20:
+        if suhu_depan < config["min_value"]["suhu_depan"]:
             if compressor_on:
                 compressor_on = False
-                logger.info("Suhu depan < 20. Compressor OFF")
+                logger.info("SUHU DEPAN < " + str(config["min_value"]["suhu_depan"]) + ". COMPRESSOR OFF")
                 pac1.set_compressor('off')
 
         # if suhu_depan > 24 or lembab_depan < 40 or suhu_belakang > 28 or lembab_belakang < 40:
-        if suhu_depan > 23:
+        if suhu_depan > config["max_value"]["suhu_depan"]:
             if not compressor_on:
                 compressor_on = True
-                logger.info("Suhu depan > 23. Compressor ON")
+                logger.info("SUHU DEPAN > " + config["max_value"]["suhu_depan"] + ". COMPRESSOR ON")
                 pac1.set_compressor('on')
 
             # if lembab_depan > 60 or lembab_belakang > 60:
@@ -137,9 +138,20 @@ def init_db():
         `waktu` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)")
 
 if __name__ == "__main__":
+    config_file_path = os.path.join(os.path.dirname(__file__), 'config.json')
+    log_file_path = os.path.join(os.path.dirname(__file__), 'dc.log')
+
+    try:
+        logger.debug("Reading config file...")
+        with open(config_file_path) as config_file:
+            config = json.load(config_file)
+    except Exception as e:
+        logger.error("Gagal membuka file konfigurasi (config.json)")
+        exit()
+
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
-    handler = logging.FileHandler('dc.log')
+    handler = logging.handlers.RotatingFileHandler(log_file_path, maxBytes=1024000, backupCount=100)
     handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
@@ -154,14 +166,14 @@ if __name__ == "__main__":
 
     try:
         logger.debug("Inisiasi Sensor depan...")
-        sensor_depan = Sensor('/dev/arduino3')
+        sensor_depan = Sensor(config["device"]["sensor_depan"])
         logger.info("Sensor depan OK!")
     except Exception as e:
         logger.info("Sensor depan tidak ditemukan!")
 
     try:
         logger.debug("Inisiasi Sensor belakang...")
-        sensor_belakang = Sensor('/dev/arduino2')
+        sensor_belakang = Sensor(config["device"]["sensor_belakang"])
         logger.info("Sensor belakang OK!")
     except Exception as e:
         logger.info("Sensor belakang tidak ditemukan!")

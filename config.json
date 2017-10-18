@@ -1,0 +1,19 @@
+{
+    "device": {
+        "pac_controller": "/dev/arduino1",
+        "sensor_belakang": "/dev/arduino2",
+        "sensor_depan": "/dev/arduino3"
+    },
+    "max_value": {
+        "suhu_depan": 23,
+        "lembab_depan": 60,
+        "suhu_belakang": 30,
+        "lembab_belakang": 60
+    },
+    "min_value": {
+        "suhu_depan": 20,
+        "lembab_depan": 40,
+        "suhu_belakang": 20,
+        "lembab_belakang": 40
+    },
+}
