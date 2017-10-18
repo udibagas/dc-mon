@@ -6,6 +6,7 @@ import requests
 import sys
 import sqlite3
 import logging
+import logging.handlers
 import os.path
 
 def cek_all():
