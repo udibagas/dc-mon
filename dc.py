@@ -141,14 +141,6 @@ if __name__ == "__main__":
     config_file_path = os.path.join(os.path.dirname(__file__), 'config.json')
     log_file_path = os.path.join(os.path.dirname(__file__), 'dc.log')
 
-    try:
-        logger.debug("Reading config file...")
-        with open(config_file_path) as config_file:
-            config = json.load(config_file)
-    except Exception as e:
-        logger.error("Gagal membuka file konfigurasi (config.json)")
-        exit()
-
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     handler = logging.handlers.RotatingFileHandler(log_file_path, maxBytes=1024000, backupCount=100)
@@ -156,6 +148,14 @@ if __name__ == "__main__":
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
+
+    try:
+        logger.debug("Reading config file...")
+        with open(config_file_path) as config_file:
+            config = json.load(config_file)
+    except Exception as e:
+        logger.error("Gagal membuka file konfigurasi (config.json)")
+        exit()
 
     try:
         logger.debug("Inisiasi PAC controller...")
