@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Param;
-use App\Sensor;
+// use App\Param;
+// use App\Sensor;
+use App\SensorLog;
 
 class HomeController extends Controller
 {
@@ -16,8 +17,15 @@ class HomeController extends Controller
     public function index()
     {
         return view('home', [
-            'params' => Param::all(),
-            'sensors' => Sensor::all(),
+            // 'params' => Param::all(),
+            // 'sensors' => Sensor::all(),
+            'log' => SensorLog::latest()->first(),
+            'gauges' => [
+                'suhu_depan' => 'SUHU DEPAN',
+                'suhu_belakang' => 'SUHU BELAKANG',
+                'lembab_depan' => 'LEMBAB DEPAN',
+                'lembab_belakang' => 'LEMBAB BELAKANG',
+            ]
         ]);
     }
 }

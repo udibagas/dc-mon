@@ -1,36 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid" id="app1">
+<div class="container-fluid">
     <div class="row">
-        @foreach ($sensors as $s)
-        <div class="col-md-6">
-            <div class="panel panel-info" style="background-color:transparent;">
-                <div class="panel-heading text-center">
-                    <span style="font-size:20px;">{{ strtoupper($s->position) }}</span>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        @foreach ($s->params as $p)
-                        <div class="col-md-4 text-center">
-                            <div id="gauge{{$s->id}}-{{$p->id}}" style="height:180px;">
-                                {{$p->name}}
-                            </div>
+        @foreach ($gauges as $key => $label)
+        <div class="col-md-3">
+            <div id="gauge_{{$key}}" style="height:250px;">
 
-                            <div class="alert alert-success text-center">
-                                <span style="font-size:16px;">NORMAL</span>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
             </div>
         </div>
         @endforeach
     </div>
-
-    <!-- <img src="{{asset('images/fan.png')}}" alt="" class="spin">
-    <example> </example> -->
 </div>
 @endsection
 
@@ -57,75 +37,76 @@
         $('#clock').html(getClock(date));
     }, 1000);
 
-    @foreach ($sensors as $s)
-        @foreach ($s->params as $p)
-        var series = [{
-            type: 'gauge',
-            min: {{$p->gauge_start}},
-            max: {{$p->gauge_end}},
-            axisLine: {
-                show: true,
-                lineStyle: {
-                    width: 5,
-                    color: [
-                        [{{$p->min_value/$p->gauge_end}}, '#ff4500'],
-                        [{{$p->lo_value/$p->gauge_end}},'orange'],
-                        [{{$p->hi_value/$p->gauge_end}}, 'green'],
-                        [{{$p->max_value/$p->gauge_end}}, 'orange'],
-                        [1, '#ff4500']
-                    ],
-                }
-            },
-            axisLabel: {
-                color : '#fff',
-                fontSize: 9
-            },
-            axisTick: {
-                show : false
-            },
-            splitLine: {
-                show: false,
-                length: 3,
-            },
-            pointer: {
-                length: '65%',
-                width: 3,
-                color: 'auto'
-            },
-            title: {
-                show: true,
-                offsetCenter: ['0%', 60],
-                textStyle: {
-                    color: '#999',
-                    fontSize: 15
-                }
-            },
-            detail: {
-                show: true,
-                formatter: '{value}{{$p->unit}}',
-                textStyle: {
-                    color: 'auto',
-                    fontSize: 15
-                }
-            },
-            data: [{value: 0, name: ''}]
-        }];
+    @foreach ($gauges as $key => $label)
 
-        var gauge{{$s->id}}_{{$p->id}} = echarts.init(document.getElementById('gauge{{$s->id}}-{{$p->id}}'));
-        gauge{{$s->id}}_{{$p->id}}.setOption({series:series});
+    var series = [{
+        type: 'gauge',
+        min: 0,
+        max: {{$key == "suhu_depan" || $key == "suhu_belakang" ? 40 : 100}},
+        axisLine: {
+            show: true,
+            lineStyle: {
+                width: 5,
+                color: [
+                    [{{$key == "suhu_depan" || $key == "suhu_belakang" ? 16/40 : 30/100}}, '#ff4500'],
+                    [{{$key == "suhu_depan" || $key == "suhu_belakang" ? 18/40 : 40/100}},'orange'],
+                    [{{$key == "suhu_depan" || $key == "suhu_belakang" ? 22/40 : 50/100}}, 'green'],
+                    [{{$key == "suhu_depan" || $key == "suhu_belakang" ? 24/40 : 60/100}}, 'orange'],
+                    [1, '#ff4500']
+                ],
+            }
+        },
+        axisLabel: {
+            color : '#fff',
+            fontSize: 9
+        },
+        axisTick: {
+            show : false
+        },
+        splitLine: {
+            show: false,
+            length: 3,
+        },
+        pointer: {
+            length: '65%',
+            width: 3,
+            color: 'auto'
+        },
+        title: {
+            show: true,
+            offsetCenter: ['0%', 90],
+            textStyle: {
+                color: '#999',
+                fontSize: 15
+            }
+        },
+        detail: {
+            show: true,
+            formatter: '{value}{{$key == "suhu_depan" || $key == "suhu_belakang" ? "C" : "%"}}',
+            textStyle: {
+                color: 'auto',
+                fontSize: 15
+            }
+        },
+        data: [{value: 0, name: ''}]
+    }];
 
-        setInterval(function() {
-            $.get('{{url("/log")}}', {chart: "gauge", param_id: {{$p->id}}, sensor_id: {{$s->id}}}, function(j) {
-                gauge{{$s->id}}_{{$p->id}}.setOption({
-                    series: {
-                        data:[{value:j.value, name:'{{strtoupper($p->name)}}'}]
-                    }
-                });
-            }, 'json');
-        }, 3000);
+    var gauge_{{$key}} = echarts.init(document.getElementById('gauge_{{$key}}'));
+    gauge_{{$key}}.setOption({series:series});
 
-        @endforeach
     @endforeach
+
+    setInterval(function() {
+        $.get('{{url("/api/sensorLog")}}', function(j) {
+            @foreach ($gauges as $key => $label)
+            gauge_{{$key}}.setOption({
+                series: {
+                    data:[{value:j.{{$key}}, name:'{{$label}}'}]
+                }
+            });
+            @endforeach
+        }, 'json');
+    }, 3000);
 
 </script>
 

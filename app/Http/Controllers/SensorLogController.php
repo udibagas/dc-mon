@@ -14,7 +14,7 @@ class SensorLogController extends Controller
      */
     public function index()
     {
-
+        return SensorLog::latest()->first();
     }
 
     /**

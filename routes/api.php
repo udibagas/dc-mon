@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('sensorLog', 'SensorLogController@index');
 Route::post('sensorLog', 'SensorLogController@store');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
