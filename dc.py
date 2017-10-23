@@ -94,7 +94,7 @@ def cek_all():
     if r.status_code == requests.codes.ok:
         logger.info("save to db success")
     else:
-        logger.info("save to db failed")
+        logger.info("save to db failed" + r.text)
 
     if data_depan_ok or data_belakang_ok:
         if cek_gas and (gas_depan > kalibrasi_gas_depan or gas_belakang > kalibrasi_gas_belakang):
