@@ -25,6 +25,12 @@ class HomeController extends Controller
                 'suhu_belakang' => 'SUHU BELAKANG',
                 'lembab_depan' => 'LEMBAB DEPAN',
                 'lembab_belakang' => 'LEMBAB BELAKANG',
+            ],
+            'buttons' => [
+                'pintu_depan' => 'PINTU DEPAN',
+                'pintu_belakang' => 'PINTU BELAKANG',
+                'compressor' => 'COMPRESSOR',
+                'fan' => 'FAN',
             ]
         ]);
     }

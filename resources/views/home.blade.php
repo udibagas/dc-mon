@@ -11,6 +11,16 @@
         </div>
         @endforeach
     </div>
+    <br><br>
+    <div class="row">
+        @foreach ($buttons as $key => $label)
+        <div class="col-md-3">
+            <div id="{{$key}}_status" class="alert alert-warning text-center" style="font-size:16px;">
+                {{$label}} : <span id="status_{{$key}}"></span>
+            </div>
+        </div>
+        @endforeach
+    </div>
 </div>
 @endsection
 
@@ -98,12 +108,80 @@
 
     setInterval(function() {
         $.get('{{url("/api/sensorLog")}}', function(j) {
+
+            if (j.compressor == 1) {
+                compressor_status = "ON";
+                $('#compressor_status')
+                    .removeClass('alert-warning')
+                    .removeClass('alert-danger')
+                    .addClass('alert-success');
+            }
+
+            else {
+                compressor_status = "OFF";
+                $('#compressor_status')
+                    .removeClass('alert-warning')
+                    .removeClass('alert-success')
+                    .addClass('alert-danger');
+            }
+
+            if (j.fan == 1) {
+                fan_status = "ON";
+                $('#fan_status')
+                    .removeClass('alert-warning')
+                    .removeClass('alert-danger')
+                    .addClass('alert-success');
+            }
+
+            else {
+                fan_status = "OFF";
+                $('#fan_status')
+                    .removeClass('alert-warning')
+                    .removeClass('alert-success')
+                    .addClass('alert-danger');
+            }
+
+            if (j.pintu_depan == 1) {
+                pintu_depan_status = "TERTUTUP";
+                $('#pintu_depan_status')
+                    .removeClass('alert-warning')
+                    .removeClass('alert-danger')
+                    .addClass('alert-success');
+            }
+
+            else {
+                pintu_depan_status = "TERBUKA";
+                $('#pintu_depan_status')
+                    .removeClass('alert-warning')
+                    .removeClass('alert-success')
+                    .addClass('alert-danger');
+            }
+
+            if (j.pintu_belakang == 1) {
+                pintu_belakang_status = "TERTUTUP";
+                $('#pintu_belakang_status')
+                    .removeClass('alert-warning')
+                    .removeClass('alert-danger')
+                    .addClass('alert-success');
+            }
+
+            else {
+                pintu_belakang_status = "TERBUKA";
+                $('#pintu_belakang_status')
+                    .removeClass('alert-warning')
+                    .removeClass('alert-success')
+                    .addClass('alert-danger');
+            }
+
             @foreach ($gauges as $key => $label)
             gauge_{{$key}}.setOption({
                 series: {
                     data:[{value:j.{{$key}}, name:'{{$label}}'}]
                 }
             });
+            @endforeach
+            @foreach ($buttons as $key => $label)
+                $('#status_{{$key}}').html({{$key}}_status)
             @endforeach
         }, 'json');
     }, 3000);
