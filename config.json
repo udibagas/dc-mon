@@ -1,4 +1,5 @@
 {
+    "api_url": "http://localhost/api/",
     "device": {
         "pac_controller": "/dev/arduino1",
         "sensor_belakang": "/dev/arduino2",

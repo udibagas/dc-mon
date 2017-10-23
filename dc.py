@@ -4,7 +4,6 @@ from pac import Pac
 from sensor import Sensor
 import requests
 import sys
-import sqlite3
 import logging
 import logging.handlers
 import os.path
@@ -13,11 +12,13 @@ import json
 def cek_all():
     global gas_counter
     global suhu_depan
-    global lembab_depan
-    global gas_depan
     global suhu_belakang
+    global lembab_depan
     global lembab_belakang
+    global gas_depan
     global gas_belakang
+    global pintu_depan
+    global pintu_belakang
     global data_depan_ok
     global data_belakang_ok
     global compressor_on
@@ -49,17 +50,6 @@ def cek_all():
     except Exception as e:
         logger.error("Gagal membaca sensor depan")
 
-    # insert to database (local & unitron)
-    if data_depan_ok:
-        try:
-            # TODO: update nilai parameter
-            r0 = requests.get('http://localhost/api/log?sensor_id=')
-            r1 = requests.get('http://10.45.5.20/smading/api/log?sensor_id=')
-            # TODO: update status pintu
-
-        except Exception as e:
-            pass
-
     try:
         data_belakang = sensor_belakang.get_all()
         data_belakang_ok = True
@@ -81,29 +71,36 @@ def cek_all():
     except Exception as e:
         logger.error("Gagal membaca sensor belakang")
 
-    if data_belakang_ok:
-        # insert to database (local & unitron)
-        try:
-            r0 = requests.get('http://localhost/api/log?sensor_id=')
-            r1 = requests.get('http://10.45.5.20/smading/api/log?sensor_id=')
-            # TODO: update status pintu
-        except Exception as e:
-            pass
+    data = {
+        "suhu_depan" : suhu_depan,
+        "suhu_belakang" : suhu_belakang,
+        "lembab_depan" : lembab_depan,
+        "lembab_belakang" : lembab_belakang,
+        "gas_depan" : gas_depan,
+        "gas_belakang" : gas_belakang,
+        "pintu_depan" : pintu_depan,
+        "pintu_belakang" : pintu_belakang,
+        "arus_input_ets" : arus_input_ets,
+        "arus_input_ups" : arus_input_ups,
+        "fan": fan_on,
+        "compressor": compressor_on
+    }
+
+    try:
+        r = requests.post(config["api_url"] + "sensorLog", data=data)
+    except Exception as e:
+        logger.info("save to db failed" + str(e))
+
+    if r.status_code == requests.codes.ok:
+        logger.info("save to db success")
+    else:
+        logger.info("save to db failed")
 
     if data_depan_ok or data_belakang_ok:
-        # input ke local db (sqite)
-        # cur = db_con.cursor()
-        # cur.execute("INSERT INTO `log` (`suhu_depan`, `suhu_belakang`, `lembab_depan`, `lembab_belakang`, `gas_depan`, `gas_belakang`, `arus_input_ets`, `arus_input_ups`, `pintu_depan`, `pintu_belakang`) VALUES (?,?,?,?,?,?,?,?,?,?)", (suhu_depan,suhu_belakang,lembab_depan,lembab_belakang,gas_depan,gas_belakang,arus_input_ets,arus_input_ups,pintu_depan,pintu_belakang))
-        # cur.close()
-        # db_con.commit()
-
-        # paling urgent cek gas dulu
         if cek_gas and (gas_depan > kalibrasi_gas_depan or gas_belakang > kalibrasi_gas_belakang):
-            # increase counter
             gas_counter += 1
 
             if gas_counter == 3:
-                # reset counter
                 gas_counter = 0
                 logger.info("Gas terdeteksi!!!")
                 logger.info("PAC OFF")
@@ -114,7 +111,6 @@ def cek_all():
                 logger.info("Fire suppression OFF")
                 pac1.set_fire('off')
 
-        # if suhu_depan < 20 or suhu_belakang < 20:
         if suhu_depan < config["min_value"]["suhu_depan"]:
             if compressor_on:
                 compressor_on = False
@@ -130,21 +126,6 @@ def cek_all():
 
             # if lembab_depan > 60 or lembab_belakang > 60:
             #     pac1.set_heater('on')
-
-def init_db():
-    db_con.execute("CREATE TABLE IF NOT EXISTS `log` ( \
-        `id` INTEGER PRIMARY KEY AUTOINCREMENT, \
-        `suhu_depan` int(11) NOT NULL, \
-        `suhu_belakang` int(11) NOT NULL, \
-        `lembab_depan` int(11) NOT NULL, \
-        `lembab_belakang` int(11) NOT NULL, \
-        `gas_depan` int(11) NOT NULL, \
-        `gas_belakang` int(11) NOT NULL, \
-        `arus_input_ets` int(11) NOT NULL, \
-        `arus_input_ups` int(11) NOT NULL, \
-        `pintu_depan` int(11) NOT NULL, \
-        `pintu_belakang` int(11) NOT NULL, \
-        `waktu` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)")
 
 if __name__ == "__main__":
     config_file_path = os.path.join(os.path.dirname(__file__), 'config.json')
@@ -192,18 +173,17 @@ if __name__ == "__main__":
     gas_counter = 0
     cek_gas = False
     suhu_depan = 0
-    lembab_depan = 0
-    gas_depan = 0
     suhu_belakang = 0
+    lembab_depan = 0
     lembab_belakang = 0
+    gas_depan = 0
     gas_belakang = 0
+    pintu_depan = 1
+    pintu_belakang = 1
     data_depan_ok = False
     data_belakang_ok = False
     fan_on = False
     compressor_on = False
-
-    # db_con = sqlite3.connect("dc.db", check_same_thread = False)
-    # init_db()
 
     if len(sys.argv) > 1 and sys.argv[1] == "run":
         logger.debug("Tunda biar serial siap dulu...")
