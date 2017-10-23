@@ -71,6 +71,16 @@ def cek_all():
     except Exception as e:
         logger.error("Gagal membaca sensor belakang")
 
+    if fan_on:
+        fan = 1
+    else:
+        fan = 0
+
+    if compressor_on:
+        compressor = 1
+    else:
+        compressor = 0
+
     data = {
         "suhu_depan" : suhu_depan,
         "suhu_belakang" : suhu_belakang,
@@ -82,8 +92,8 @@ def cek_all():
         "pintu_belakang" : pintu_belakang,
         "arus_input_ets" : arus_input_ets,
         "arus_input_ups" : arus_input_ups,
-        "fan": fan_on,
-        "compressor": compressor_on
+        "fan": fan,
+        "compressor": compressor
     }
 
     try:
